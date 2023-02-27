@@ -66,6 +66,8 @@
 #'   \item{cvsd}{The standard error of the cv error for each lambda.}
 #'   \item{cvup}{The cv error plus its standard error for each lambda.}
 #'   \item{cvlo}{The cv error minus its standard error for each lambda.}
+#'   \item{nzero}{The number of non-zero coefficients at each lambda.}
+#'   \item{netcox.fit}{A netcox fit for the full data at all lambdas.}
 #'   \item{lambda.min}{The lambda such that the \code{cvm} reach its minimum.}
 #'   \item{lambda.1se}{The maximum of lambda such that the \code{cvm} is less than the minimum the \code{cvup} (the minmum of \code{cvm} plus its standard error).}
 #' @seealso \code{\link{netcox}}, \code{\link{plot_netcox_cv}}.

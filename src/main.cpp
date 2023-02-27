@@ -14,98 +14,171 @@ void proximalGraph(
     double lam) {
   
   // read in U and convert to spams::Matrix<double> alpha0
-  double* ptrU = new double[p];
+  Matrix<double> alpha0(p, 1);
   for (int r = 0; r < p; r++) {
-    ptrU[r] = U(r);
+    alpha0(r, 0) = U(r);
   }
-  Matrix<double> alpha0(ptrU, p, 1);
-  
-  
   
   // grp dimensions
   int gr = grp.nrow();
   int gc = grp.ncol();
-  int grc = int (gr * gc);
-  
   // read in grp and convert to spams::Matrix<bool> grp_dense
   // then to spams::SpMatrix<bool> groups
-  bool* ptrG = new bool[grc];
+  Matrix<bool> grp_dense(gr, gc);
   for (int r = 0; r < gr; r++) {
     for (int c = 0; c < gc; c++) {
-      ptrG[c * gr + r] = (grp(r, c) != 0.0);
+      grp_dense(r, c) = (grp(r, c) != 0.0);
     }
   }
-  Matrix<bool> grp_dense(ptrG, gr, gc);
   SpMatrix<bool> groups;
   grp_dense.toSparse(groups);
-  
-  
   
   // grpV dimensions
   int gvr = grpV.nrow();
   int gvc = grpV.ncol();
-  int gvrc = int (gvr * gvc);
-  
   // read in grpV and convert to spams::Matrix<bool> grpV_dense
   // then to spams::SpMatrix<bool> groups_var
-  bool* ptrGV = new bool[gvrc];
+  Matrix<bool> grpV_dense(gvr, gvc);
   for (int r = 0; r < gvr; r++) {
     for (int c = 0; c < gvc; c++) {
-      ptrGV[c * gvr + r] = (grpV(r, c) != 0.0);
+      grpV_dense(r, c) = (grpV(r, c) != 0.0);
     }
   }
-  Matrix<bool> grpV_dense(ptrGV, gvr, gvc);
   SpMatrix<bool> groups_var;
   grpV_dense.toSparse(groups_var);
   
-  
-  
   // read in etaG and convert to spams::Vector<int> eta_g
   int n_etaG = etaG.length();
-  double* ptrEG = new double[n_etaG];
-  for (int i = 0; i < n_etaG; i++) {
-    ptrEG[i] = etaG(i);
-  }
-  Vector<double> eta_g(ptrEG, n_etaG);
-  
-  
+  Vector<double> eta_g(&etaG[0], n_etaG);
   
   // read in regul and convert to char
-  int l = regul.length();
-  char* name_regul = new char[l];
-  for (int i = 0; i < l + 1; i++) {
-    name_regul[i] = regul[i];
-  }
-  
-  
+  // int l = regul.length();
+  // char* name_regul = new char[l];
+  // for (int i = 0; i < l + 1; i++) {
+  //   name_regul[i] = regul[i];
+  // }
   
   // Initialize alpha - proximal operator
   Matrix<double> alpha(p, 1);
   alpha.setZeros();
   
-  
   // call _proximalGraph
   _proximalGraph(&alpha0, &alpha,
                  &eta_g, &groups, &groups_var,
                  1, lam, 0.0, 0.0,
-                 false, false, name_regul,
+                 false, false, &regul[0],
                  false, false, true, true,
                  1, false);
   
-  
-  
   // put updated alpha back into U
   for (int r = 0; r < p; r++) {
-    U(r) = alpha[r];
+    U(r) = alpha(r, 0);
   }
-  
-  // free the dynamic memory
-  delete[] ptrU;
-  delete[] ptrG;
-  delete[] ptrGV;
-  delete[] ptrEG;
-  delete[] name_regul;
 }
+
+// // [[Rcpp::export]]
+// void proximalGraph(
+//     Rcpp::NumericVector& U,
+//     int& p,
+//     std::string& regul,
+//     Rcpp::NumericMatrix& grp,
+//     Rcpp::NumericMatrix& grpV,
+//     Rcpp::NumericVector& etaG,
+//     double lam) {
+//   
+//   // read in U and convert to spams::Matrix<double> alpha0
+//   double* ptrU = new double[p];
+//   for (int r = 0; r < p; r++) {
+//     ptrU[r] = U(r);
+//   }
+//   Matrix<double> alpha0(ptrU, p, 1);
+//   
+//   
+//   
+//   // grp dimensions
+//   int gr = grp.nrow();
+//   int gc = grp.ncol();
+//   int grc = int (gr * gc);
+//   
+//   // read in grp and convert to spams::Matrix<bool> grp_dense
+//   // then to spams::SpMatrix<bool> groups
+//   bool* ptrG = new bool[grc];
+//   for (int r = 0; r < gr; r++) {
+//     for (int c = 0; c < gc; c++) {
+//       ptrG[c * gr + r] = (grp(r, c) != 0.0);
+//     }
+//   }
+//   Matrix<bool> grp_dense(ptrG, gr, gc);
+//   SpMatrix<bool> groups;
+//   grp_dense.toSparse(groups);
+//   
+//   
+//   
+//   // grpV dimensions
+//   int gvr = grpV.nrow();
+//   int gvc = grpV.ncol();
+//   int gvrc = int (gvr * gvc);
+//   
+//   // read in grpV and convert to spams::Matrix<bool> grpV_dense
+//   // then to spams::SpMatrix<bool> groups_var
+//   bool* ptrGV = new bool[gvrc];
+//   for (int r = 0; r < gvr; r++) {
+//     for (int c = 0; c < gvc; c++) {
+//       ptrGV[c * gvr + r] = (grpV(r, c) != 0.0);
+//     }
+//   }
+//   Matrix<bool> grpV_dense(ptrGV, gvr, gvc);
+//   SpMatrix<bool> groups_var;
+//   grpV_dense.toSparse(groups_var);
+//   
+//   
+//   
+//   // read in etaG and convert to spams::Vector<int> eta_g
+//   int n_etaG = etaG.length();
+//   double* ptrEG = new double[n_etaG];
+//   for (int i = 0; i < n_etaG; i++) {
+//     ptrEG[i] = etaG(i);
+//   }
+//   Vector<double> eta_g(ptrEG, n_etaG);
+//   
+//   
+//   
+//   // read in regul and convert to char
+//   int l = regul.length();
+//   char* name_regul = new char[l];
+//   for (int i = 0; i < l + 1; i++) {
+//     name_regul[i] = regul[i];
+//   }
+//   
+//   
+//   
+//   // Initialize alpha - proximal operator
+//   Matrix<double> alpha(p, 1);
+//   alpha.setZeros();
+//   
+//   
+//   // call _proximalGraph
+//   _proximalGraph(&alpha0, &alpha,
+//                  &eta_g, &groups, &groups_var,
+//                  1, lam, 0.0, 0.0,
+//                  false, false, name_regul,
+//                  false, false, true, true,
+//                  1, false);
+//   
+//   
+//   
+//   // put updated alpha back into U
+//   for (int r = 0; r < p; r++) {
+//     U(r) = alpha[r];
+//   }
+//   
+//   // free the dynamic memory
+//   delete[] ptrU;
+//   delete[] ptrG;
+//   delete[] ptrGV;
+//   delete[] ptrEG;
+//   delete[] name_regul;
+// }
 
 // [[Rcpp::export]]
 Rcpp::List netcox_cpp(Rcpp::NumericMatrix& x,

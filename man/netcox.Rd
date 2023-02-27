@@ -98,7 +98,7 @@ grp.var <- matrix(c(1, 0, 0, 0, 0, #A1
 eta_g <- rep(1, 5)
 x <- as.matrix(sim[, c("A1","A2","C1","C2","B",
                        "A1B","A2B","C1B","C2B")])
-lam.seq <- 10^seq(0, -2, by = -0.3)
+lam.seq <- 10^seq(0, -2, by = -0.2)
 
 fit <- netcox(x = x,
               ID = sim$Id,

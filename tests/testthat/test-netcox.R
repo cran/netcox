@@ -1,7 +1,7 @@
 library(netcox)
 
 # weights of each group
-eta_g <- rep(1,5)
+eta_g <- rep(1, 5)
 # grouping structure
 grp <- matrix(c(0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
@@ -25,17 +25,17 @@ lam.seq <- 10^seq(0, -2, by = -0.2)
 
 # fit
 fit <- netcox(x = x,
-                ID = sim$Id,
-                time = sim$Start,
-                time2 = sim$Stop,
-                event = sim$Event,
-                lambda = lam.seq,
-                group = grp,
-                group_variable = grp.var,
-                penalty_weights = eta_g,
-                tol = 1e-4,
-                maxit = 1e3,
-                verbose = FALSE)
+              ID = sim$Id,
+              time = sim$Start,
+              time2 = sim$Stop,
+              event = sim$Event,
+              lambda = lam.seq,
+              group = grp,
+              group_variable = grp.var,
+              penalty_weights = eta_g,
+              tol = 1e-4,
+              maxit = 1e3,
+              verbose = FALSE)
 plot_netcox_sp(fit)
 
 # cv

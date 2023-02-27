@@ -3,7 +3,7 @@
 #' @name sim
 #' @keywords datasets
 #' @usage data(sim)
-#' @format A simulated data frame that is used to illustrate the use of the netcox package. The max follow-up time for each subject is set to be 50. The total number of subject is 400.
+#' @format A simulated data frame that is used to illustrate the use of the netcox package. The max follow-up time for each subject is set to be 5. The total number of subject is 50.
 #' \describe{
 #'   \item{Id}{The ID of each subject.}
 #'   \item{Event}{During the time from \code{Start} to \code{Stop}, if the subject experience the event. We use the function \code{permalgorithm} in the \code{R} package \code{PermAlgo} to generate the Event.}
@@ -58,9 +58,10 @@
 #'  return(Xn)
 #'}
 #'
-#'  n=400;m=50
+#'  n=50;m=5
 #'  covariates=gen_X_n(m,n)
 #'  # generate outcomes
+#'  # library(PermAlgo)
 #'  # data <- permalgorithm(n, m, covariates, 
 #'  #                       XmatNames = c("A1","A2","C1","C2","B","A1B","A2B","C1B","C2B"),
 #'  #                       #change according to scenario 1/2
